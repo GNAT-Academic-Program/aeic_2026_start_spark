@@ -1,0 +1,27 @@
+:name: STM32F746 + BMP390 I2C demo
+:description: Runs the I2C_Bmp Ada firmware against a simulated BMP390 on I2C1.
+
+# Path to your built ELF - edit the path below to match your binary location.
+$bin = "/home/henley/Desktop/baremetal_ada/ghal_examples/bin/i2c_bmp"
+
+# Compile the custom BMP390 model so the platform can reference I2C.BMP390.
+# Must come BEFORE LoadPlatformDescription.
+include @bmp390.cs
+
+mach create "stm32f746-bmp390"
+machine LoadPlatformDescription @stm32f746-bmp390.repl
+
+# The STM32F746G-DISCO routes its ST-LINK virtual COM port to USART1
+# (PA9/PB7). If your Board/Debug uses a different USART, change this line.
+showAnalyzer sysbus.usart1
+
+macro reset
+"""
+    sysbus LoadELF $bin
+"""
+runMacro $reset
+
+echo "Loaded. Type 'start' to run, 'pause' to stop."
+echo "Inspect/poke the sensor from the Monitor, e.g.:"
+echo "  sysbus.i2c1.bmp390 Temperature        # compensated reading the firmware should print"
+echo "  sysbus.i2c1.bmp390 RawTemperature 8200000   # change the simulated temperature"

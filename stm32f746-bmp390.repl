@@ -1,0 +1,10 @@
+// STM32F746 Discovery + BMP390 on I2C1 @ 0x77 (SCL=PB8, SDA=PB9, AF4).
+//
+// Extends Renode's stock STM32F746 platform, which already defines the CPU,
+// flash/SRAM, usart1 (the board's ST-LINK VCP), and i2c1..i2c4. We only add
+// the BMP390 as an I2C1 child. The compiled BMP390 model must be available
+// first (the .resc does `include @bmp390.cs` before loading this platform).
+
+using "platforms/cpus/stm32f746.repl"
+
+bmp390: I2C.BMP390 @ i2c1 0x77
